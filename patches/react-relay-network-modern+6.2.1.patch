@@ -1,0 +1,56 @@
+diff --git a/node_modules/react-relay-network-modern/node8/middlewares/upload.js b/node_modules/react-relay-network-modern/node8/middlewares/upload.js
+index 73aefa7..135c5da 100644
+--- a/node_modules/react-relay-network-modern/node8/middlewares/upload.js
++++ b/node_modules/react-relay-network-modern/node8/middlewares/upload.js
+@@ -24,7 +24,9 @@ function uploadMiddleware() {
+     const {
+       clone: extractedOperations,
+       files
+-    } = (0, _extractFiles.extractFiles)(operations);
++    } = (0, _extractFiles.extractFiles)(operations, "", (value) => {
++      return value instanceof _extractFiles.ReactNativeFile;
++    });
+ 
+     if (files.size) {
+       const formData = new FormData();
+@@ -37,7 +39,7 @@ function uploadMiddleware() {
+       formData.append('map', JSON.stringify(pathMap));
+       i = 0;
+       files.forEach((paths, file) => {
+-        formData.append(++i, file, file.name);
++        formData.append(++i, file);
+       });
+       req.fetchOpts.method = 'POST';
+       req.fetchOpts.body = formData;
+diff --git a/node_modules/react-relay-network-modern/node8/middlewares/upload.js.flow b/node_modules/react-relay-network-modern/node8/middlewares/upload.js.flow
+index 3d8d99f..0d2e6e4 100644
+--- a/node_modules/react-relay-network-modern/node8/middlewares/upload.js.flow
++++ b/node_modules/react-relay-network-modern/node8/middlewares/upload.js.flow
+@@ -1,6 +1,6 @@
+ /* @flow */
+ 
+-import { extractFiles } from 'extract-files';
++import { extractFiles, ReactNativeFile } from 'extract-files';
+ 
+ import type { Middleware } from '../definition';
+ import RelayRequestBatch from '../RelayRequestBatch';
+@@ -16,7 +16,9 @@ export default function uploadMiddleware(): Middleware {
+       variables: req.variables,
+     };
+ 
+-    const { clone: extractedOperations, files } = extractFiles(operations);
++    const { clone: extractedOperations, files } = extractFiles(operations, "", (value) => {
++      return value instanceof ReactNativeFile;
++    });
+ 
+     if (files.size) {
+       const formData = new FormData();
+@@ -32,7 +34,7 @@ export default function uploadMiddleware(): Middleware {
+ 
+       i = 0;
+       files.forEach((paths, file) => {
+-        formData.append(++i, file, file.name);
++        formData.append(++i, file);
+       });
+ 
+       req.fetchOpts.method = 'POST';
